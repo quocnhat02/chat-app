@@ -20,7 +20,13 @@ const HomePage = () => {
           Talk-A-Tive
         </Text>
       </Box>
-      <Box></Box>
+      <Box
+        bg={'white'}
+        w={'100%'}
+        p={4}
+        borderRadius={'lg'}
+        borderWidth={'1px'}
+      ></Box>
     </Container>
   );
 };
