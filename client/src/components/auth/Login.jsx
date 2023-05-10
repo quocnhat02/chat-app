@@ -22,14 +22,14 @@ const Login = () => {
 
   return (
     <VStack spacing={'5px'} color={'black'}>
-      <FormControl id='email' isRequired>
+      <FormControl id='login-email' isRequired>
         <FormLabel>Email</FormLabel>
         <Input
           placeholder='Enter your email'
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      <FormControl id='password' isRequired>
+      <FormControl id='login-password' isRequired>
         <FormLabel>Password</FormLabel>
         <InputGroup>
           <Input

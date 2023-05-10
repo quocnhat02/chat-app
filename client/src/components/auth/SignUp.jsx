@@ -6,6 +6,7 @@ import {
   InputGroup,
   InputRightElement,
   VStack,
+  useToast,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
@@ -16,10 +17,57 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [pic, setPic] = useState('');
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const handleShow = () => setShow(!show);
 
-  const postDetails = () => {};
+  const postDetails = (pics) => {
+    setLoading(true);
+    if (pic === undefined) {
+      toast({
+        title: 'Please select an Image!',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+      return;
+    }
+
+    if (pics.type === 'image/jpeg' || pics.type === 'image/png') {
+      const data = new FormData();
+      data.append('file', pics);
+      data.append('upload_preset', 'chat-app');
+      data.append('cloud_name', 'dthmpigow');
+      fetch(
+        'https://api.cloudinary.com/v1_1/dthmpigow/image/upload',
+        {
+          method: 'post',
+          body: data,
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setPic(data.url.toString());
+          console.log(data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    } else {
+      toast({
+        title: 'Please select an Image!',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+      return;
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -72,7 +120,7 @@ const SignUp = () => {
         </InputGroup>
       </FormControl>
 
-      <FormControl id='email' isRequired>
+      <FormControl id='pic'>
         <FormLabel>Upload your Picture</FormLabel>
         <Input
           type='file'
@@ -87,6 +135,7 @@ const SignUp = () => {
         width={'100%'}
         style={{ marginTop: 15 }}
         onClick={handleSubmit}
+        isLoading={loading}
       >
         Sign Up
       </Button>
