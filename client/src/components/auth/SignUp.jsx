@@ -9,6 +9,8 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const [show, setShow] = useState(false);
@@ -19,6 +21,7 @@ const SignUp = () => {
   const [pic, setPic] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate();
 
   const handleShow = () => setShow(!show);
 
@@ -50,7 +53,6 @@ const SignUp = () => {
         .then((res) => res.json())
         .then((data) => {
           setPic(data.url.toString());
-          console.log(data);
           setLoading(false);
         })
         .catch((err) => {
@@ -69,8 +71,59 @@ const SignUp = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    if (!name || !email || !password || !confirmPassword) {
+      toast({
+        title: 'Please fill all the fields',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const { data } = await axios.post(
+        '/api/users',
+        {
+          name,
+          email,
+          password,
+          pic,
+        },
+        config
+      );
+      toast({
+        title: 'Registration successful',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      setLoading(false);
+      navigate('/chats');
+    } catch (error) {
+      toast({
+        title: 'Error occurred',
+        description: error.response.data.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+      setLoading(false);
+    }
   };
 
   return (
