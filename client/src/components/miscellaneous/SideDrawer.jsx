@@ -21,6 +21,7 @@ const SideDrawer = () => {
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState();
 
+  console.log(ChatState());
   const { user } = ChatState();
 
   return (
