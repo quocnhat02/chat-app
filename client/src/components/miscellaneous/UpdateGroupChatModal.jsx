@@ -56,6 +56,40 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
       });
       return;
     }
+
+    try {
+      setLoading(true);
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.put(
+        '/api/chat/group-add',
+        {
+          chatId: selectedChat._id,
+          userId: user1._id,
+        },
+        config
+      );
+
+      setSelectedChat(data);
+      setFetchAgain(!fetchAgain);
+      setLoading(false);
+    } catch (error) {
+      toast({
+        title: 'Error occurred',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'top-right',
+      });
+      setLoading(false);
+    }
   };
 
   const handleRemove = () => {};
