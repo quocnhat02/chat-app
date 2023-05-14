@@ -62,7 +62,6 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
       const config = {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${user.token}`,
         },
       };
@@ -90,6 +89,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
       });
       setLoading(false);
     }
+    setGroupChatName('');
   };
 
   const handleRemove = async (user1) => {
@@ -106,14 +106,11 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
     try {
       setLoading(true);
-
       const config = {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${user.token}`,
         },
       };
-
       const { data } = await axios.put(
         '/api/chat/group-remove',
         {
@@ -122,7 +119,6 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
         config
       );
-
       user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
       setFetchAgain(!fetchAgain);
       fetchMessages();
@@ -138,23 +134,20 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
       });
       setLoading(false);
     }
+    setGroupChatName('');
   };
 
   const handleRename = async () => {
     if (!groupChatName) {
       return;
     }
-
     try {
       setRenameLoading(true);
-
       const config = {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${user.token}`,
         },
       };
-
       const { data } = await axios.put(
         '/api/chat/group-rename',
         {
@@ -178,7 +171,6 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
       });
       setRenameLoading(false);
     }
-
     setGroupChatName('');
   };
 
@@ -198,7 +190,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
       };
 
       const { data } = await axios.get(`/api/users?search=${search}`, config);
-      console.log(data);
+
       setLoading(false);
       setSearchResult(data);
     } catch (error) {

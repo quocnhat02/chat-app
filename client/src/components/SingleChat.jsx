@@ -32,22 +32,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     if (!selectedChat) {
       return;
     }
-
     try {
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       };
-
       setLoading(true);
-
       const { data } = await axios.get(
         `/api/message/${selectedChat._id}`,
         config
       );
-
-      console.log('data', data);
       setMessages(data);
       setLoading(false);
     } catch (error) {
@@ -72,18 +67,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             Authorization: `Bearer ${user.token}`,
           },
         };
-
-        setNewMessage('');
         const { data } = await axios.post(
           '/api/message',
           {
             content: newMessage,
-            chatId: selectedChat._id,
+            chatId: selectedChat,
           },
           config
         );
-
         setMessages([...messages, data]);
+        setNewMessage('');
       } catch (error) {
         toast({
           title: 'Error occurred',
@@ -124,7 +117,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               icon={<ArrowBackIcon />}
               onClick={() => setSelectedChat('')}
             />
-            {!selectedChat.isGroupChat ? (
+            {messages && !selectedChat.isGroupChat ? (
               <>
                 {getSender(user, selectedChat.users)}
                 <ProfileModal user={getFullSender(user, selectedChat.users)} />
@@ -133,9 +126,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               <>
                 {selectedChat.chatName.toUpperCase()}
                 <UpdateGroupChatModal
+                  fetchMessages={fetchMessages}
                   fetchAgain={fetchAgain}
                   setFetchAgain={setFetchAgain}
-                  fetchMessages={fetchMessages}
                 />
               </>
             )}
