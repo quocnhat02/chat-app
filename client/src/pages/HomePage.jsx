@@ -11,8 +11,11 @@ import {
 import React from 'react';
 import Login from '../components/auth/Login';
 import SignUp from '../components/auth/SignUp';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+  // const navigate = useNavigate();
+
   return (
     <Container maxW={'xl'} centerContent>
       <Box
