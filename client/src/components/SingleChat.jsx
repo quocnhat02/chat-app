@@ -17,6 +17,7 @@ import UpdateGroupChatModal from './miscellaneous/UpdateGroupChatModal';
 import axios from 'axios';
 
 import './styles.css';
+import ScrollableChat from './ScrollableChat';
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
@@ -46,7 +47,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         config
       );
 
-      console.log(messages);
+      console.log('data', data);
       setMessages(data);
       setLoading(false);
     } catch (error) {
@@ -134,6 +135,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <UpdateGroupChatModal
                   fetchAgain={fetchAgain}
                   setFetchAgain={setFetchAgain}
+                  fetchMessages={fetchMessages}
                 />
               </>
             )}
@@ -158,7 +160,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 margin={'auto'}
               />
             ) : (
-              <div className='messages'>{/* Messages */}</div>
+              <div className='messages'>
+                {/* Messages */}
+                <ScrollableChat messages={messages} />
+              </div>
             )}
             <FormControl onKeyDown={handleSendMessage} isRequired mt={3}>
               <Input
