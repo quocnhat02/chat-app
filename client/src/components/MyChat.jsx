@@ -101,7 +101,7 @@ const MyChat = () => {
                 <Text>
                   {!chat.isGroupChat
                     ? getSender(loggedUser, chat.users)
-                    : chat.name}
+                    : chat.chatName}
                 </Text>
               </Box>
             ))}
