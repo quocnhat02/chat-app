@@ -71,7 +71,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           '/api/message',
           {
             content: newMessage,
-            chatId: selectedChat,
+            chatId: selectedChat._id,
           },
           config
         );
@@ -117,21 +117,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               icon={<ArrowBackIcon />}
               onClick={() => setSelectedChat('')}
             />
-            {messages && !selectedChat.isGroupChat ? (
-              <>
-                {getSender(user, selectedChat.users)}
-                <ProfileModal user={getFullSender(user, selectedChat.users)} />
-              </>
-            ) : (
-              <>
-                {selectedChat.chatName.toUpperCase()}
-                <UpdateGroupChatModal
-                  fetchMessages={fetchMessages}
-                  fetchAgain={fetchAgain}
-                  setFetchAgain={setFetchAgain}
-                />
-              </>
-            )}
+            {messages &&
+              (!selectedChat.isGroupChat ? (
+                <>
+                  {getSender(user, selectedChat.users)}
+                  <ProfileModal
+                    user={getFullSender(user, selectedChat.users)}
+                  />
+                </>
+              ) : (
+                <>
+                  {selectedChat.chatName.toUpperCase()}
+                  <UpdateGroupChatModal
+                    fetchMessages={fetchMessages}
+                    fetchAgain={fetchAgain}
+                    setFetchAgain={setFetchAgain}
+                  />
+                </>
+              ))}
           </Text>
           <Box
             display={'flex'}
