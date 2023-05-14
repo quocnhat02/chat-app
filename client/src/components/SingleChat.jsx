@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 import { ChatState } from '../context/ChatProvider';
 import {
   Box,
@@ -15,6 +16,8 @@ import ProfileModal from './miscellaneous/ProfileModal';
 import UpdateGroupChatModal from './miscellaneous/UpdateGroupChatModal';
 import axios from 'axios';
 
+import './styles.css';
+
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -23,6 +26,41 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const toast = useToast();
 
   const { user, selectedChat, setSelectedChat } = ChatState();
+
+  const fetchMessages = async () => {
+    if (!selectedChat) {
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      setLoading(true);
+
+      const { data } = await axios.get(
+        `/api/message/${selectedChat._id}`,
+        config
+      );
+
+      console.log(messages);
+      setMessages(data);
+      setLoading(false);
+    } catch (error) {
+      toast({
+        title: 'Error occurred',
+        description: 'Failed to load the messages',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'top-right',
+      });
+      setLoading(false);
+    }
+  };
 
   const handleSendMessage = async (e) => {
     if (e.key === 'Enter' && newMessage) {
@@ -61,6 +99,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
   };
+
+  useEffect(() => {
+    fetchMessages();
+  }, [selectedChat]);
 
   return (
     <>
@@ -116,7 +158,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 margin={'auto'}
               />
             ) : (
-              <div>{/* Messages */}</div>
+              <div className='messages'>{/* Messages */}</div>
             )}
             <FormControl onKeyDown={handleSendMessage} isRequired mt={3}>
               <Input
