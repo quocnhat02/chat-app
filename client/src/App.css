@@ -6,3 +6,15 @@
   background-position: center;
   color: black;
 }
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
