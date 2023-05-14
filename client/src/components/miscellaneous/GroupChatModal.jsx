@@ -65,7 +65,9 @@ const GroupChatModal = ({ children }) => {
 
   const handleSubmit = async (query) => {};
 
-  const handleDelete = () => {};
+  const handleDelete = (deleteUser) => {
+    setSelectedUsers(selectedUsers.filter((sel) => sel._id !== deleteUser._id));
+  };
 
   const handleGroup = (userToAdd) => {
     if (selectedUsers.includes(userToAdd)) {
@@ -117,7 +119,7 @@ const GroupChatModal = ({ children }) => {
             <Box w={'100%'} display={'flex'} flexWrap={'wrap'}>
               {selectedUsers.map((u) => (
                 <UserBadgeItem
-                  key={user._id}
+                  key={u._id}
                   user={u}
                   handleFunction={() => handleDelete(u)}
                 />
