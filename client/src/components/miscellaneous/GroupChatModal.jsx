@@ -19,6 +19,7 @@ import { ChatState } from '../../context/ChatProvider';
 import axios from 'axios';
 import UserListItem from '../UserAvatar/UserListItem';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
+import { throttle } from 'lodash';
 
 const GroupChatModal = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -47,10 +48,18 @@ const GroupChatModal = ({ children }) => {
         },
       };
 
-      const { data } = await axios.get(`/api/users?search=${search}`, config);
-      console.log(data);
-      setLoading(false);
-      setSearchResult(data);
+      // const { data } = await axios.get(`/api/users?search=${search}`, config);
+
+      // setLoading(false);
+      // setSearchResult(data);
+
+      const throttledSearch = throttle(async () => {
+        const { data } = await axios.get(`/api/users?search=${search}`, config);
+        setLoading(false);
+        setSearchResult(data);
+      }, 1000);
+
+      throttledSearch();
     } catch (error) {
       toast({
         title: 'Error occurred',
@@ -60,6 +69,7 @@ const GroupChatModal = ({ children }) => {
         isClosable: true,
         position: 'top-right',
       });
+      setLoading(false);
     }
   };
 

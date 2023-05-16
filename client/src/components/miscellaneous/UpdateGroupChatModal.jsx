@@ -21,6 +21,7 @@ import { ChatState } from '../../context/ChatProvider';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import axios from 'axios';
 import UserListItem from '../UserAvatar/UserListItem';
+import { throttle } from 'lodash';
 
 const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -189,10 +190,18 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
 
-      const { data } = await axios.get(`/api/users?search=${search}`, config);
+      // const { data } = await axios.get(`/api/users?search=${search}`, config);
 
-      setLoading(false);
-      setSearchResult(data);
+      // setLoading(false);
+      // setSearchResult(data);
+
+      const throttledSearch = throttle(async () => {
+        const { data } = await axios.get(`/api/users?search=${search}`, config);
+        setLoading(false);
+        setSearchResult(data);
+      }, 1000);
+
+      throttledSearch();
     } catch (error) {
       toast({
         title: 'Error occurred',
