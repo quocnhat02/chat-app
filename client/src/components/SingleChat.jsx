@@ -28,6 +28,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState();
+  const [socketConnected, setSocketConnected] = useState(false);
 
   const toast = useToast();
 
@@ -105,6 +106,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     socket = io(ENDPOINT);
+    socket.emit('setup', user);
+    socket.on('connection', () => {
+      setSocketConnected(true);
+    });
   }, []);
 
   return (
