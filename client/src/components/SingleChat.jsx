@@ -19,6 +19,11 @@ import axios from 'axios';
 import './styles.css';
 import ScrollableChat from './ScrollableChat';
 
+import io from 'socket.io-client';
+const ENDPOINT = 'http://localhost:7000';
+
+let socket, selectedChatCompare;
+
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -97,6 +102,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     fetchMessages();
   }, [selectedChat]);
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+  }, []);
 
   return (
     <>
