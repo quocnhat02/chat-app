@@ -75,6 +75,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             Authorization: `Bearer ${user.token}`,
           },
         };
+        setNewMessage('');
         const { data } = await axios.post(
           '/api/message',
           {
@@ -83,8 +84,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
           config
         );
+
+        socket.emit('new message', data);
         setMessages([...messages, data]);
-        setNewMessage('');
       } catch (error) {
         toast({
           title: 'Error occurred',
@@ -103,16 +105,31 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
-    fetchMessages();
-  }, [selectedChat]);
-
-  useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit('setup', user);
     socket.on('connection', () => {
       setSocketConnected(true);
     });
   }, []);
+
+  useEffect(() => {
+    fetchMessages();
+
+    selectedChatCompare = selectedChat;
+  }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on('message received', (newMessageReceived) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        // notification
+      } else {
+        setMessages([...messages, newMessageReceived]);
+      }
+    });
+  });
 
   return (
     <>
